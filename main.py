@@ -30,7 +30,7 @@ clouds = [Cloud(WIDTH, HEIGHT, "cloud.png") for _ in range(3)]
 #def start_game():
  #   print("Игра началась!")
 
-def start_menu():
+def start_menu(title, buttons):
     while True:
         #def handle_events():
         global WIDTH, HEIGHT, screen, background
@@ -42,9 +42,10 @@ def start_menu():
                 WIDTH, HEIGHT = event.w, event.h
                 screen = pygame.display.set_mode((WIDTH, HEIGHT), RESIZABLE)
                 background = pygame.transform.scale(pygame.image.load("menu_background.png"), (WIDTH, HEIGHT))
-                for button in start_buttons:
-                    button.update_position(WIDTH, HEIGHT)
-            for button in start_buttons:
+                for button_list in [menu_buttons, easy_buttons, middle_buttons, hard_buttons, settings_buttons]:
+                    for button in button_list:
+                        button.update_position(WIDTH, HEIGHT)
+            for button in buttons:
                 button.handle_event(event)
 
         #draw_screen()
@@ -53,20 +54,27 @@ def start_menu():
         for cloud in clouds:
             cloud.update()
             cloud.draw(screen)
-        for button in start_buttons:
+        for button in buttons:
             button.draw(screen)
 
         font = pygame.font.Font("pixel_font.ttf", 72)
-        text_surface = font.render("EASY LEVEL", True, WHITE)
+        text_surface = font.render(title, True, WHITE)
         text_rect = text_surface.get_rect(center=(WIDTH // 2, 70))
         screen.blit(text_surface, text_rect)
         pygame.display.flip()
 
-def settings():
-    print("Открываем настройки!")
+#створюємо вінка
+def easy_menu():
+    start_menu("EASY LEVEL", easy_buttons)
 
-def about():
-    print("О программе!")
+def middle_menu():
+    start_menu("MIDDLE LEVEL", middle_buttons)
+
+def hard_menu():
+    start_menu("HARD LEVEL", hard_buttons)
+
+def settings_menu():
+    start_menu("SETTINGS", settings_buttons)
 
 def exit_game():
     print("Выход из игры!")
@@ -74,53 +82,45 @@ def exit_game():
     sys.exit()
 
 def main_menu():
-    while True:
-        #def handle_events():
-        global WIDTH, HEIGHT, screen, background
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.VIDEORESIZE:
-                WIDTH, HEIGHT = event.w, event.h
-                screen = pygame.display.set_mode((WIDTH, HEIGHT), RESIZABLE)
-                background = pygame.transform.scale(pygame.image.load("menu_background.png"), (WIDTH, HEIGHT))
-                for button in menu_buttons:
-                    button.update_position(WIDTH, HEIGHT)
-            for button in menu_buttons:
-                button.handle_event(event)
-
-        #draw_screen()
-        screen.fill(BLACK)
-        screen.blit(background, (0, 0))
-        for cloud in clouds:
-            cloud.update()
-            cloud.draw(screen)
-        for button in menu_buttons:
-            button.draw(screen)
-
-        font = pygame.font.Font("pixel_font.ttf", 72)
-        text_surface = font.render("MENU", True, WHITE)
-        text_rect = text_surface.get_rect(center=(WIDTH // 2, 70))
-        screen.blit(text_surface, text_rect)
-        pygame.display.flip()
+    start_menu("MENU", menu_buttons)
 
 button_font = pygame.font.Font("pixel_font.ttf", 36)
 
 # Создаём кнопки
 menu_buttons = [
-    Button(0, 160, "normal_button.png", "pressed_button.png", "EASY", button_font, size=(200, 70), action=start_menu),
-    Button(0, 240, "normal_button.png", "pressed_button.png", "MIDDLE", button_font, size=(200, 70), action=settings),
-    Button(0, 320, "normal_button.png", "pressed_button.png", "HARD", button_font, size=(200, 70), action=about),
-    Button(0, 400, "normal_button.png", "pressed_button.png", "SETTINGS", button_font, size=(200, 70), action=exit_game)
+    Button(0, 160, "normal_button.png", "pressed_button.png", "EASY", button_font, size=(200, 70), action=easy_menu),
+    Button(0, 240, "normal_button.png", "pressed_button.png", "MIDDLE", button_font, size=(200, 70), action=middle_menu),
+    Button(0, 320, "normal_button.png", "pressed_button.png", "HARD", button_font, size=(200, 70), action=hard_menu),
+    Button(0, 400, "normal_button.png", "pressed_button.png", "SETTINGS", button_font, size=(200, 70), action=settings_menu),
+    Button(0, 480, "normal_button.png", "pressed_button.png", "EXIT", button_font, size=(200, 70), action=exit_game)
 ]
 
-start_buttons = [
-    Button(0, 160, "normal_button.png", "pressed_button.png", "SROCE", button_font, size=(200, 70), action=None),
+easy_buttons = [
+    Button(0, 160, "normal_button.png", "pressed_button.png", "SCORE", button_font, size=(200, 70), action=None),
     Button(0, 240, "normal_button.png", "pressed_button.png", "START", button_font, size=(200, 70), action=None),
     Button(0, 320, "normal_button.png", "pressed_button.png", "BACK", button_font, size=(200, 70), action=main_menu)
 
 ]
+
+middle_buttons = [
+    Button(0, 160, "normal_button.png", "pressed_button.png", "SCORE", button_font, size=(200, 70), action=None),
+    Button(0, 240, "normal_button.png", "pressed_button.png", "START", button_font, size=(200, 70), action=None),
+    Button(0, 320, "normal_button.png", "pressed_button.png", "BACK", button_font, size=(200, 70), action=main_menu)
+
+]
+
+hard_buttons = [
+    Button(0, 160, "normal_button.png", "pressed_button.png", "SCORE", button_font, size=(200, 70), action=None),
+    Button(0, 240, "normal_button.png", "pressed_button.png", "START", button_font, size=(200, 70), action=None),
+    Button(0, 320, "normal_button.png", "pressed_button.png", "BACK", button_font, size=(200, 70), action=main_menu)
+
+]
+
+settings_buttons = [
+    Button(0, 320, "normal_button.png", "pressed_button.png", "BACK", button_font, size=(200, 70), action=main_menu)
+
+]
+
 
 if __name__ == "__main__":
     main_menu()
